@@ -23,6 +23,11 @@ Route::resource(
     ForumController::class
 );
 
+Route::post(
+    '/forum/{id}/comment',
+    [ForumController::class, 'storeComment']
+)->name('forum.comment');
+
 Route::resource(
     'quiz',
     QuizController::class
@@ -32,3 +37,18 @@ Route::get(
     '/ai-tutor',
     [AiTutorController::class,'index']
 )->name('ai.index');
+
+Route::get(
+    '/comment/{id}/edit',
+    [ForumController::class, 'editComment']
+)->name('comment.edit');
+
+Route::put(
+    '/comment/{id}',
+    [ForumController::class, 'updateComment']
+)->name('comment.update');
+
+Route::delete(
+    '/comment/{id}',
+    [ForumController::class, 'destroyComment']
+)->name('comment.destroy');
