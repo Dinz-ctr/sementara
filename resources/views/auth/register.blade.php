@@ -30,6 +30,7 @@
         <h3 class="text-center mb-4 fw-bold">Daftar Akun Baru</h3>
         <form method="POST" action="{{ route('register') }}">
             @csrf
+             <input type="hidden" name="role" value="{{ request()->query('role') }}">
             <div class="mb-3">
                 <input type="text" name="name" class="form-control rounded-pill p-3" placeholder="Nama Lengkap" required>
             </div>
