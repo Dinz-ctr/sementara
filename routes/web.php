@@ -5,6 +5,9 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\AiTutorController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\GuruController;
+use App\Http\Controllers\SiswaController;
 
 Route::redirect('/', '/dashboard');
 
@@ -58,3 +61,20 @@ Route::middleware(['auth'])->group(function (){
     //Route yang bisa di askes apabila sudah login
     Route::resource('articles' , ArticleController::class);
 });
+// Halaman yang cuma bisa diakses admin
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'index']);
+});
+
+// akses hanya guru dan admin
+Route::middleware(['auth', 'role:admin,guru'])->group(function () {
+    Route::get('/guru/input-nilai', [GuruController::class, 'create']);
+});
+
+// Halaman untuk siswa
+Route::middleware(['auth', 'role:siswa,admin'])->group(function () {
+    Route::get('/siswa/tugas', [SiswaController::class, 'index']);
+});
+Route::get('/register-choice', function (){
+    return view('auth.register_choice');
+})->name('register.choice');

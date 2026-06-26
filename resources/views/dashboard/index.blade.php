@@ -24,7 +24,9 @@
         <div class="d-flex justify-content-end" style="flex: 1;">
             @guest
                 <a href="{{ route('login') }}" class="btn btn-outline-primary rounded-pill mr-2">Login</a>
-                <a href="{{ route('register') }}" class="btn btn-primary rounded-pill">Register</a>
+                <!--<a href="{{ route('register') }}" class="btn btn-primary rounded-pill">Register</a>-->            
+                <button type="button" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#registerModal">
+                    Register
             @endguest
         </div>
     </nav>
@@ -57,6 +59,34 @@
 
         </div>
 
+    </div>
+
+     <!-- Modal Pop-up -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title font-weight-bold mx-auto pt-3">Pilih Kategori Akun</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <p class="text-muted mb-4">Silakan pilih peran Anda untuk memulai proses pendaftaran.</p>
+        
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{{ route('register') }}?role=guru" 
+                            class="btn btn-lg px-4 py-3 mr-2 shadow-sm" 
+                            style="background: #4e73df; color: white; border-radius: 12px; transition: 0.3s;">
+                            <i class="fas fa-chalkboard-teacher mr-2"></i> Saya Guru
+                        </a>
+            
+                        <a href="{{ route('register') }}?role=siswa" 
+                            class="btn btn-lg px-4 py-3 shadow-sm" 
+                            style="background: #1cc88a; color: white; border-radius: 12px; transition: 0.3s;">
+                            <i class="fas fa-user-graduate mr-2"></i> Saya Siswa
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 @stop
