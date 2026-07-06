@@ -28,31 +28,34 @@ class ArticleController extends Controller
     }
 
     public function create()
-    {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'guru') {
-            return redirect()->route('articles.index')->with('error', 'Anda tidak memiliki akses untuk membuat artikel.');
-        }
+{
+    $role = strtolower(auth()->user()->role);
 
-        return view('articles.create');
+    if ($role !== 'admin' && $role !== 'guru') {
+        return redirect()->route('articles.index')->with('error', 'Anda tidak memiliki akses untuk membuat artikel.');
     }
 
-    public function store(Request $request)
-    {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'guru') {
-            return redirect()->route('articles.index')->with('error', 'Anda tidak memiliki akses untuk membuat artikel.');
-        }
+    return view('articles.create');
+}
 
-        Article::create([
-            'title' => $request->title,
-            'author' => $request->author,
-            'category' => $request->category,
-            'content' => $request->content,
-            'status' => 'pending',
-        ]);
+public function store(Request $request)
+{
+    $role = strtolower(auth()->user()->role);
 
-        return redirect()->route('articles.index')->with('success', 'Artikel berhasil diajukan! Menunggu ACC Admin.');
+    if ($role !== 'admin' && $role !== 'guru') {
+        return redirect()->route('articles.index')->with('error', 'Anda tidak memiliki akses untuk membuat artikel.');
     }
 
+    Article::create([
+        'title' => $request->title,
+        'author' => $request->author,
+        'category' => $request->category,
+        'content' => $request->content,
+        'status' => 'pending',
+    ]);
+
+    return redirect()->route('articles.index')->with('success', 'Artikel berhasil diajukan! Menunggu persetujuan Admin.');
+}
     public function show($id)
     {
         $article = Article::findOrFail($id);
