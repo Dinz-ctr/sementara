@@ -7,29 +7,29 @@ use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-    public function search(Request $request)
+    public function index(Request $request)
     {
         $keyword = $request->input('query');
         
         $articles = Article::where('status', 'approved')
-            ->where(function($query) use ($keyword) {
-                $query->where('title', 'LIKE', "%{$keyword}%")
-                      ->orWhere('content', 'LIKE', "%{$keyword}%");
-            })->get();
-        
-        return view('articles.search_result', compact('articles', 'keyword'));
-    }
+            ->when($keyword, function($query) use ($keyword) {
+                return $query->where('title', 'LIKE', "%{$keyword}%")
+                             ->orWhere('content', 'LIKE', "%{$keyword}%");
+            })
+            ->latest()
+            ->get();
 
-    public function index()
-    {
-        $articles = Article::where('status', 'approved')->latest()->get();
+        $trendingArticles = Article::where('status', 'approved')
+            ->orderBy('views', 'desc')
+            ->take(5)
+            ->get();
 
-        return view('articles.index', compact('articles'));
+        return view('articles.index', compact('articles', 'trendingArticles', 'keyword'));
     }
 
     public function create()
     {
-        if (auth()->user()->role === 'siswa') {
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'guru') {
             return redirect()->route('articles.index')->with('error', 'Anda tidak memiliki akses untuk membuat artikel.');
         }
 
@@ -38,7 +38,7 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->role === 'siswa') {
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'guru') {
             return redirect()->route('articles.index')->with('error', 'Anda tidak memiliki akses untuk membuat artikel.');
         }
 
@@ -59,6 +59,10 @@ class ArticleController extends Controller
         
         if ($article->status !== 'approved' && auth()->user()->role !== 'admin') {
             abort(403);
+        }
+
+        if (auth()->user()->role === 'siswa') {
+            $article->increment('views');
         }
 
         return view('articles.show', compact('article'));
